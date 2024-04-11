@@ -1,4 +1,4 @@
-<h1>Nest JS Interview Questions & Answers</h1>
+# Nest JS Interview Questions & Answers
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 
@@ -8,33 +8,30 @@
 
 ---
 
-## 📝 Table of Contents
+### Table of Contents
 
 <details open>
 <summary>
 Hide/Show table of contents
 </summary>
 
-| No | Questions |
+| No  | Questions |
 | --- | --- |
-| 1   | [What is Nest JS?](#what-is-nest-js) |
-| 2   | [What are interceptors? Write a code for create a interceptor to transform the response.](#what-are-interceptors)|
-| 3   | [Write and explain a code snippet to achieve CRUD in nest js.](#crud-in-nestjs)|
-| 4   | [What are the relationships available in nest js?](#what-are-relationships-nestjs)|
-| 5   | [What are interceptors? Write a code for create a interceptor to transform the response.](#getting_started)|
-
-
+| 1 | [What is Nest JS?](#what-is-nest-js) |
+| 2 | [What are interceptors? Write a code for create a interceptor to transform the response.](#what-are-interceptors) |
+| 3 | [Write and explain a code snippet to achieve CRUD in nest js.](#crud-in-nestjs) |
+| 4 | [What are the relationships available in nest js?](#what-are-relationships-nestjs) |
 
 </details>
 
-1.   ### What is Nest JS?
+1. ### What is Nest JS?
 Nest (NestJS) is a framework for building efficient, scalable Node.js server-side applications. It uses progressive JavaScript, is built with and fully supports TypeScript (yet still enables developers to code in pure JavaScript) and combines elements of OOP (Object Oriented Programming), FP (Functional Programming), and FRP (Functional Reactive Programming).
 
 Under the hood, Nest makes use of robust HTTP Server frameworks like Express (the default) and optionally can be configured to use Fastify as well!
 
 **[⬆ Back to Top](#table-of-contents)**
 
-2.   ### What are interceptors? Write a code for create a interceptor to transform the response.
+2. ### What are interceptors? Write a code for create a interceptor to transform the response.
 In NestJS, interceptors are middleware-like components used to intercept incoming requests or outgoing responses, allowing you to perform common tasks such as logging, modifying data, or transforming responses.
 
 Below is an example of how you can create an interceptor to transform the response in NestJS:
@@ -106,7 +103,7 @@ With this setup, when you access the /data endpoint, the response will be transf
 
 **[⬆ Back to Top](#table-of-contents)**
 
-3.   ### Write and explain a code snippet to achieve CRUD in nest js.
+3. ### Write and explain a code snippet to achieve CRUD in nest js.
 Let's create a "todo" module to manage tasks. We'll have a Todo entity with CRUD operations exposed through a controller.
 
 First, let's define the Todo entity:
@@ -225,7 +222,7 @@ With this setup, you have a basic CRUD implementation for managing Todo resource
 
 **[⬆ Back to Top](#table-of-contents)**
 
-4.   ### What are the relationships available in nest js?
+4. ### What are the relationships available in nest js?
 In NestJS, you can manage relationships between entities using various techniques depending on the data persistence layer you're using (e.g., TypeORM, Sequelize, Mongoose). Here are some common types of relationships you can handle in NestJS:
 
 - **One-to-One**: Each record in one entity is associated with exactly one record in another entity, and vice versa.
