@@ -17,39 +17,24 @@ Hide/Show table of contents
 
 | No | Questions |
 | --- | --- |
-| 1 | [What is Nest JS?](#what-is-nest-js) |
-| 2 | [What are interceptors? Write a code for create a interceptor to transform the response.](#what-are-interceptors)|
-| 3 | [Write and explain a code snippet to achieve CRUD in nest js.](#crud-in-nestjs)|
-| 4 | [What are the relationships available in nest js?](#what-are-relationships-nestjs)|
-| 5 | [What are interceptors? Write a code for create a interceptor to transform the response.](#getting_started)|
+| 1   | [What is Nest JS?](#what-is-nest-js) |
+| 2   | [What are interceptors? Write a code for create a interceptor to transform the response.](#what-are-interceptors)|
+| 3   | [Write and explain a code snippet to achieve CRUD in nest js.](#crud-in-nestjs)|
+| 4   | [What are the relationships available in nest js?](#what-are-relationships-nestjs)|
+| 5   | [What are interceptors? Write a code for create a interceptor to transform the response.](#getting_started)|
 
 
-3. 
-4. What is mongodb? What is mongoose? How you connect nest js with mongo db? Write a sample code for this?
-5. What is swagger? What is REST? What is rest api? How you create a rest api with the help of swagger? Write code snippet.
-6. Explain how you use a rest appi created using swagger in nest js to other software technology?
-7. What is nest factory?
-8. How to crud operations in nest js with GraphQL? Write a code snippet.
-9. What is serialisation? How you transform and sanitize the data?
-10. Explain sign up setup in nest js.
-11. What are exception filters?
-12. How can you call mongodb as NoSQL db?
-13. How NoSQL is better than RDMS?
-14. How to create a collection? How to create database?
-15. Explain CRUD sql statements? Write it.
-16. What are the data types available in mongodb?
-17. What is aggregation?
 
 </details>
 
-1. ### What is Nest JS?
+1.   ### What is Nest JS?
 Nest (NestJS) is a framework for building efficient, scalable Node.js server-side applications. It uses progressive JavaScript, is built with and fully supports TypeScript (yet still enables developers to code in pure JavaScript) and combines elements of OOP (Object Oriented Programming), FP (Functional Programming), and FRP (Functional Reactive Programming).
 
 Under the hood, Nest makes use of robust HTTP Server frameworks like Express (the default) and optionally can be configured to use Fastify as well!
 
 **[⬆ Back to Top](#table-of-contents)**
 
-2. ### What are interceptors? Write a code for create a interceptor to transform the response.
+2.   ### What are interceptors? Write a code for create a interceptor to transform the response.
 In NestJS, interceptors are middleware-like components used to intercept incoming requests or outgoing responses, allowing you to perform common tasks such as logging, modifying data, or transforming responses.
 
 Below is an example of how you can create an interceptor to transform the response in NestJS:
@@ -121,7 +106,7 @@ With this setup, when you access the /data endpoint, the response will be transf
 
 **[⬆ Back to Top](#table-of-contents)**
 
-3. ### Write and explain a code snippet to achieve CRUD in nest js.
+3.   ### Write and explain a code snippet to achieve CRUD in nest js.
 Let's create a "todo" module to manage tasks. We'll have a Todo entity with CRUD operations exposed through a controller.
 
 First, let's define the Todo entity:
@@ -236,4 +221,66 @@ import { TodoService } from './todo.service';
 })
 export class TodoModule {}
 ```
+With this setup, you have a basic CRUD implementation for managing Todo resources in NestJS. You can make HTTP requests to endpoints like /todos (GET for getting all todos, POST for creating a new todo), /todos/:id (GET for getting a specific todo, PUT for updating a todo, DELETE for deleting a todo).
+
+**[⬆ Back to Top](#table-of-contents)**
+
+4.   ### What are the relationships available in nest js?
+In NestJS, you can manage relationships between entities using various techniques depending on the data persistence layer you're using (e.g., TypeORM, Sequelize, Mongoose). Here are some common types of relationships you can handle in NestJS:
+
+- **One-to-One**: Each record in one entity is associated with exactly one record in another entity, and vice versa.
+
+- **One-to-Many (or Many-to-One)**: Each record in one entity can be associated with multiple records in another entity, but each record in the other entity is associated with only one record in the first entity.
+
+- **Many-to-Many**: Each record in one entity can be associated with multiple records in another entity, and vice versa.
+
+These relationships are typically defined using decorators provided by the ORM libraries used in NestJS. Here's a brief overview of how these relationships are defined using TypeORM as an example:
+
+Below is an example of how you can create an interceptor to transform the response in NestJS:
+
+```ts
+// User entity
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Todo } from './todo.entity';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @OneToMany(type => Todo, todo => todo.user)
+  todos: Todo[];
+}
+
+// Todo entity
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { User } from './user.entity';
+
+@Entity()
+export class Todo {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  title: string;
+
+  @ManyToOne(type => User, user => user.todos)
+  user: User;
+}
+
+```
+In this example:
+
+The User entity has a one-to-many relationship with the Todo entity, defined by the @OneToMany decorator.
+
+The Todo entity has a many-to-one relationship with the User entity, defined by the @ManyToOne decorator.
+
+These relationships are bi-directional, meaning that changes made to one side of the relationship are automatically reflected on the other side.
+
+
+Remember that the specific syntax and decorators used for defining relationships may vary depending on the ORM library you're using (e.g., TypeORM, Sequelize, Mongoose).
+
 **[⬆ Back to Top](#table-of-contents)**
