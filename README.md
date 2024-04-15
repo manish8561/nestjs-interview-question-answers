@@ -25,7 +25,9 @@ Hide/Show table of contents
 | 4   | [What are the relationships available in nest js?](#what-are-the-relationships-available-in-nest-js) |
 | 5   | [What is mongodb? What is mongoose? How you connect nest js with mongo db? Write a sample code for this?](#what-is-mongodb-what-is-mongoose-how-you-connect-nest-js-with-mongo-db-write-a-sample-code-for-this) |
 | 6   | [What is swagger? What is REST? What is rest api? How you create a rest api with the help of swagger? Write code snippet.](#what-is-swagger-what-is-rest-what-is-rest-api-how-you-create-a-rest-api-with-the-help-of-swagger-write-code-snippet) |
-
+| 7   | [Explain how you use a rest api created using swagger in nest js to other software technology?](#explain-how-you-use-a-rest-api-created-using-swagger-in-nest-js-to-other-software-technology) |
+| 8   | [What is nest factory?](#what-is-nest-factory) |
+| 9   | [How to crud operations in nest js with GraphQL? Write a code snippet.](#how-to-crud-operations-in-nest-js-with-graphql-write-a-code-snippet) |
 </details>
 
 1. ### What is Nest JS?
@@ -500,5 +502,208 @@ Hide/Show table of contents
 
     This is just a basic example. You can further expand your API by adding more controllers, services, and models, and Swagger will automatically generate documentation for them.
 
+
+**[⬆ Back to Top](#table-of-contents)**
+
+7. ### Explain how you use a rest api created using swagger in nest js to other software technology?
+    Once you've created a REST API with Swagger in NestJS, you can easily consume it from other software technologies, regardless of the programming language or framework being used. Here's how you can use the Swagger documentation to interact with the REST API from another technology:
+
+    **API Documentation:** The Swagger UI provides a user-friendly interface for developers to explore the API endpoints, request/response payloads, and any required parameters or headers. Users can interact with the Swagger UI to understand how to make requests to the API and interpret the responses.
+
+    **API Client Generation:** Swagger provides tools to generate API clients in various programming languages automatically. These clients abstract away the low-level HTTP communication details and provide a convenient interface for making requests to the API. Developers can generate client code for their preferred programming language using the Swagger documentation.
+
+    **Manual Integration:** Alternatively, developers can manually integrate with the REST API using HTTP requests. They can use libraries or frameworks available in their technology stack to send HTTP requests (GET, POST, PUT, DELETE) to the API endpoints defined in the Swagger documentation. The documentation specifies the endpoint URLs, request payloads (if any), and expected response formats, which developers can use to construct their requests and handle the responses accordingly.
+
+    Regardless of the approach chosen, the Swagger documentation serves as a comprehensive reference for developers to understand and interact with the REST API created using NestJS. It provides the necessary information for consuming the API from other software technologies, facilitating interoperability and integration across diverse systems.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+8. ### What is nest factory?
+    In NestJS, the NestFactory is a class provided by the NestJS framework that is responsible for creating instances of the Nest application. It is used to bootstrap your Nest application, allowing you to create an application instance and configure it before listening for incoming requests.
+
+    Here are some key points about NestFactory:
+
+    **Application Bootstrap:** `NestFactory` is typically used in the `main.ts` file of your NestJS application to bootstrap your application. You use it to create an instance of your application module (`AppModule`) and configure it with various options before starting the server.
+
+    **Async Initialization:** The `create` method of `NestFactory` returns a Promise that resolves to the application instance. This allows you to perform asynchronous initialization tasks, such as setting up database connections or loading configuration settings, before your application starts listening for requests.
+
+    **Configuration Options:** `NestFactory` provides methods to configure various aspects of your application, such as setting up middleware, enabling CORS (Cross-Origin Resource Sharing), specifying the HTTP server framework (e.g., Express, Fastify), and more. These methods allow you to customize your application's behavior according to your requirements.
+
+    **Dependency Injection Container:** `NestFactory` utilizes the dependency injection container provided by NestJS to manage the application's dependencies. It automatically resolves and injects dependencies into your controllers, services, and other components, making it easy to build modular and testable applications.
+
+    Here's a basic example of using NestFactory to bootstrap a NestJS application:
+
+    ```ts
+    import { NestFactory } from '@nestjs/core';
+    import { AppModule } from './app.module';
+
+    async function bootstrap() {
+      const app = await NestFactory.create(AppModule);
+      await app.listen(3000);
+    }
+    bootstrap();
+    ```
+    In this example:
+  - We import the `NestFactory` class from `@nestjs/core`.
+  - We import the root module of our Nest application, typically named `AppModule`.
+  - We define an asynchronous function `bootstrap()` that uses `NestFactory.create()` to create an instance of our application module.
+  - We call `app.listen()` to start the server and make it listen for incoming HTTP requests on port 3000.
+    
+    Overall, NestFactory simplifies the process of creating and configuring NestJS applications, allowing developers to focus on building robust and scalable backend solutions.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+9. ### How to crud operations in nest js with GraphQL? Write a code snippet.
+    To perform CRUD operations in NestJS with GraphQL, you typically use the `@nestjs/graphql` module along with other GraphQL-related libraries. Here's a basic example of how you can set up a GraphQL API in NestJS and implement CRUD operations:
+
+    First, install the required dependencies:
+    ```bash
+    npm install @nestjs/graphql graphql type-graphql class-validator class-transformer
+    ```
+    Now, let's create a simple GraphQL schema and implement CRUD operations for a hypothetical Post entity:
+    ```ts
+    // post.entity.ts
+
+    import { ObjectType, Field, ID } from '@nestjs/graphql';
+
+    @ObjectType()
+    export class Post {
+      @Field(() => ID)
+      id: string;
+
+      @Field()
+      title: string;
+
+      @Field()
+      content: string;
+    }
+    ```
+    ```ts
+    // post.service.ts
+
+    import { Injectable } from '@nestjs/common';
+    import { Post } from './post.entity';
+    import { v4 as uuidv4 } from 'uuid';
+
+    @Injectable()
+    export class PostService {
+      private posts: Post[] = [];
+
+      findAll(): Post[] {
+        return this.posts;
+      }
+
+      findById(id: string): Post {
+        return this.posts.find(post => post.id === id);
+      }
+
+      create(title: string, content: string): Post {
+        const post: Post = { id: uuidv4(), title, content };
+        this.posts.push(post);
+        return post;
+      }
+
+      update(id: string, title: string, content: string): Post {
+        const index = this.posts.findIndex(post => post.id === id);
+        if (index !== -1) {
+          this.posts[index].title = title;
+          this.posts[index].content = content;
+          return this.posts[index];
+        }
+        return null;
+      }
+
+      delete(id: string): boolean {
+        const index = this.posts.findIndex(post => post.id === id);
+        if (index !== -1) {
+          this.posts.splice(index, 1);
+          return true;
+        }
+        return false;
+      }
+    }
+    ```
+    ```ts
+    // post.resolver.ts
+
+    import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+    import { Post } from './post.entity';
+    import { PostService } from './post.service';
+
+    @Resolver(() => Post)
+    export class PostResolver {
+      constructor(private readonly postService: PostService) {}
+
+      @Query(() => [Post])
+      async posts(): Promise<Post[]> {
+        return this.postService.findAll();
+      }
+
+      @Query(() => Post)
+      async post(@Args('id', { type: () => ID }) id: string): Promise<Post> {
+        return this.postService.findById(id);
+      }
+
+      @Mutation(() => Post)
+      async createPost(
+        @Args('title') title: string,
+        @Args('content') content: string,
+      ): Promise<Post> {
+        return this.postService.create(title, content);
+      }
+
+      @Mutation(() => Post)
+      async updatePost(
+        @Args('id', { type: () => ID }) id: string,
+        @Args('title') title: string,
+        @Args('content') content: string,
+      ): Promise<Post> {
+        return this.postService.update(id, title, content);
+      }
+
+      @Mutation(() => Boolean)
+      async deletePost(@Args('id', { type: () => ID }) id: string): Promise<boolean> {
+        return this.postService.delete(id);
+      }
+    }
+    ```
+    ```ts
+    // post.module.ts
+
+    import { Module } from '@nestjs/common';
+    import { PostService } from './post.service';
+    import { PostResolver } from './post.resolver';
+
+    @Module({
+      providers: [PostService, PostResolver],
+    })
+    export class PostModule {}
+    ```
+    ```ts
+    // app.module.ts
+
+    import { Module } from '@nestjs/common';
+    import { GraphQLModule } from '@nestjs/graphql';
+    import { PostModule } from './post/post.module';
+
+    @Module({
+      imports: [
+        GraphQLModule.forRoot({
+          autoSchemaFile: true,
+        }),
+        PostModule,
+      ],
+    })
+    export class AppModule {}
+    ```
+    In this code:
+
+  - We define a **Post** entity with **id**, **title**, and **content** fields.
+  - We create a **PostService** to handle CRUD operations for **Post** entities.
+  - We implement resolver methods in **PostResolver** to expose GraphQL queries and mutations for CRUD operations.
+  - We create a GraphQL module using `GraphQLModule.forRoot()` in `AppModule` to configure the GraphQL server and specify the schema file location (`autoSchemaFile`).
+  - We import and include the **PostModule** in **AppModule** to make the **PostResolver** and **PostService** available in the application.
+    
+    With this setup, you can now run your NestJS application and use GraphQL to perform CRUD operations on Post entities.
 
 **[⬆ Back to Top](#table-of-contents)**
