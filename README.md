@@ -28,6 +28,11 @@ Hide/Show table of contents
 | 7   | [Explain how you use a rest api created using swagger in nest js to other software technology?](#explain-how-you-use-a-rest-api-created-using-swagger-in-nest-js-to-other-software-technology) |
 | 8   | [What is nest factory?](#what-is-nest-factory) |
 | 9   | [How to crud operations in nest js with GraphQL? Write a code snippet.](#how-to-crud-operations-in-nest-js-with-graphql-write-a-code-snippet) |
+| 10   | [What is serialisation? How you transform and sanitize the data?](#what-is-serialisation-how-you-transform-and-sanitize-the-data) |
+| 11   | [Explain sign up setup in nest js.](#explain-sign-up-setup-in-nest-js) |
+| 12   | [What are exception filters?](#what-are-exception-filters) |
+
+
 </details>
 
 1. ### What is Nest JS?
@@ -705,5 +710,183 @@ Hide/Show table of contents
   - We import and include the **PostModule** in **AppModule** to make the **PostResolver** and **PostService** available in the application.
     
     With this setup, you can now run your NestJS application and use GraphQL to perform CRUD operations on Post entities.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+10. ### What is serialisation? How you transform and sanitize the data?
+    Serialization is the process of converting data structures or objects into a format that can be easily stored, transmitted, or reconstructed later. This typically involves converting complex data types, such as objects or arrays, into a linear format, such as a string of bytes or a text-based format like JSON or XML. Serialization is commonly used in computer science for tasks like data storage, network communication, and inter-process communication.
+
+    When it comes to transforming and sanitizing data, these processes involve modifying or cleaning data to meet specific requirements or standards. Here's how they differ:
+
+    **Data Transformation:** It involves converting data from one format, structure, or representation to another. This can include tasks like:
+    - Changing the data type of certain values (e.g., converting strings to numbers).
+    - Reorganizing the structure of data (e.g., flattening nested objects).
+    - Applying calculations or operations to transform data (e.g., converting units of measurement).
+    
+    In the context of web development, data transformation is often used to prepare data for display in user interfaces or to adapt data to meet the requirements of different systems or APIs.
+
+    **Data Sanitization:** It refers to the process of cleaning, validating, or filtering data to remove any potentially harmful or undesirable elements. This is commonly done to prevent security vulnerabilities, such as SQL injection, cross-site scripting (XSS), or other types of attacks. Data sanitization may involve:
+    - Removing or escaping special characters that could be used for malicious purposes.
+    - Validating input to ensure it conforms to expected formats or ranges.
+    - Filtering out sensitive information that should not be exposed to certain users or systems.
+
+    Data sanitization is essential for maintaining the integrity and security of applications, particularly when dealing with user input or data obtained from external sources.
+
+    In practice, data transformation and sanitization often go hand in hand, especially in web applications. For example, before serializing data to be sent to a client, you may transform it to a suitable format for presentation and sanitize it to remove any potentially dangerous content. Similarly, when receiving and processing user input, you may sanitize the data to prevent security vulnerabilities and then transform it to match the expected format or structure within your application.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+11. ### Explain sign up setup in nest js.
+    Setting up a sign-up functionality in a NestJS application involves creating endpoints, services, and possibly middleware to handle user registration and validation. Here's a step-by-step guide on how to set up a basic sign-up feature:
+
+    **Create a User Entity:** First, define a user entity to represent user data. This entity will typically include properties like username, email, password (hashed), etc.
+
+    ```ts
+    // user.entity.ts
+
+    import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+    @Entity()
+    export class User {
+      @PrimaryGeneratedColumn()
+      id: number;
+
+      @Column()
+      username: string;
+
+      @Column()
+      email: string;
+
+      @Column()
+      password: string; // Store hashed password
+    }
+    ```
+    **Create a User Service:** Implement a service to handle user-related operations, such as user creation, fetching user data, etc.
+    ```ts
+    // user.service.ts
+
+    import { Injectable } from '@nestjs/common';
+    import { InjectRepository } from '@nestjs/typeorm';
+    import { Repository } from 'typeorm';
+    import { User } from './user.entity';
+
+    @Injectable()
+    export class UserService {
+      constructor(
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+      ) {}
+
+      async create(user: User): Promise<User> {
+        return this.userRepository.save(user);
+      }
+
+      async findByEmail(email: string): Promise<User | undefined> {
+        return this.userRepository.findOne({ email });
+      }
+    }
+    ```
+    **Create a Sign-up Controller:** Implement a controller to handle sign-up requests.
+    ```ts
+    // auth.controller.ts
+
+    import { Controller, Post, Body, HttpException, HttpStatus } from '@nestjs/common';
+    import { UserService } from './user.service';
+    import { User } from './user.entity';
+
+    @Controller('auth')
+    export class AuthController {
+      constructor(private readonly userService: UserService) {}
+
+      @Post('signup')
+      async signUp(@Body() userData: User): Promise<User> {
+        const existingUser = await this.userService.findByEmail(userData.email);
+        if (existingUser) {
+          throw new HttpException('User with this email already exists', HttpStatus.BAD_REQUEST);
+        }
+        return this.userService.create(userData);
+      }
+    }
+    ```
+    **Module Configuration:** Add the user-related services and controllers to the appropriate modules.
+    ```ts
+    // user.module.ts
+
+    import { Module } from '@nestjs/common';
+    import { TypeOrmModule } from '@nestjs/typeorm';
+    import { UserService } from './user.service';
+    import { User } from './user.entity';
+
+    @Module({
+      imports: [TypeOrmModule.forFeature([User])],
+      providers: [UserService],
+      exports: [UserService],
+    })
+    export class UserModule {}
+    ```
+    ```ts
+    // auth.module.ts
+
+    import { Module } from '@nestjs/common';
+    import { TypeOrmModule } from '@nestjs/typeorm';
+    import { AuthController } from './auth.controller';
+    import { UserModule } from './user/user.module';
+
+    @Module({
+      imports: [TypeOrmModule.forRoot(), UserModule],
+      controllers: [AuthController],
+    })
+    export class AuthModule {}
+    ```
+    **Set Up Routes:** Finally, set up routes for the sign-up endpoint.
+    ```ts
+    // app.module.ts
+
+    import { Module } from '@nestjs/common';
+    import { TypeOrmModule } from '@nestjs/typeorm';
+    import { AuthModule } from './auth/auth.module';
+
+    @Module({
+      imports: [
+        TypeOrmModule.forRoot(),
+        AuthModule,
+      ],
+    })
+    export class AppModule {}
+    ```
+    With these steps completed, you've set up a basic sign-up functionality in your NestJS application. When a POST request is made to the /auth/signup endpoint with user data in the request body, the controller will validate the input, check if the user already exists, and then create the user if not.
+
+**[⬆ Back to Top](#table-of-contents)**
+
+12. ### What are exception filters?
+    Exception filters in NestJS are used to catch and handle exceptions that occur during the execution of request handlers or other operations. They intercept errors, allowing you to customize error handling logic, such as logging errors, transforming them into specific formats, or returning custom error responses. Exception filters are implemented as classes annotated with `@Catch()` and define a `catch()` method to handle exceptions. They can be registered globally or locally within your application to handle errors at different levels of granularity. Overall, exception filters provide a centralized mechanism for robust error handling in NestJS applications.
+    ```ts
+    // exception.filter.ts
+
+    import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+    import { Response } from 'express';
+
+    @Catch(HttpException)
+    export class HttpExceptionFilter implements ExceptionFilter {
+      catch(exception: HttpException, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse<Response>();
+        const status = exception.getStatus();
+
+        response
+          .status(status)
+          .json({
+            statusCode: status,
+            message: exception.message,
+          });
+      }
+    }
+    ```
+    In this example:
+
+    - We define an exception filter `HttpExceptionFilter` that catches instances of `HttpException`.
+    - In the `catch()` method, we extract the HTTP response object from the arguments host and use it to set the response status and send a JSON response with the error message.
+
+    You can then register this exception filter globally or locally within your application to handle HTTP exceptions and customize error responses as needed. Exception filters provide a powerful mechanism for centralizing error handling logic and improving the robustness of your NestJS application.
 
 **[⬆ Back to Top](#table-of-contents)**
