@@ -887,6 +887,6 @@ Hide/Show table of contents
     - We define an exception filter `HttpExceptionFilter` that catches instances of `HttpException`.
     - In the `catch()` method, we extract the HTTP response object from the arguments host and use it to set the response status and send a JSON response with the error message.
 
-    You can then register this exception filter globally or locally within your application to handle HTTP exceptions and customize error responses as needed. Exception filters provide a powerful mechanism for centralizing error handling logic and improving the robustness of your NestJS application.
+    You can then register this exception filter globally or locally within your application to handle HTTP exceptions and customize error responses as needed. Exception filters provide a powerful mechanism for centralizing error handling logic & improving the robustness of your NestJS application.
 
 **[⬆ Back to Top](#table-of-contents)**
